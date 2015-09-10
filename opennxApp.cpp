@@ -39,6 +39,7 @@
 #include <unistd.h>
 #endif
 #include <wx/cmdline.h>
+#include <wx/cmdargs.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/image.h>
 #include <wx/config.h>
@@ -167,7 +168,7 @@ IMPLEMENT_APP(opennxApp);
         // If KDE_LANG is set, then it has precedence over kdeglobals.
         wxString lang;
         if (::wxGetEnv(wxT("KDE_LANG"), &lang)) {
-            myLogDebug(wxT("Overriding LANG from KDE_LANG environment to: '%s'"), lang.c_str());
+            myLogDebug(wxT("Overriding LANG from KDE_LANG environment to: '%s'"), lang.wx_str());
             ::wxSetEnv(wxT("LANG"), lang);
         } else {
             // Try to get KDE language settings and override locale accordingly
@@ -186,7 +187,7 @@ IMPLEMENT_APP(opennxApp);
                     if (lang.Length() < 3)
                         lang << wxT("_") << country.Upper();
                     lang << wxT(".UTF-8");
-                    myLogDebug(wxT("Overriding LANG from kdeglobals to: '%s'"), lang.c_str());
+                    myLogDebug(wxT("Overriding LANG from kdeglobals to: '%s'"), lang.wx_str());
                     ::wxSetEnv(wxT("LANG"), lang);
                 }
             }
@@ -326,7 +327,7 @@ opennxApp::CreateDesktopEntry(MyXmlConfig *cfg)
         if (::wxDirExists(path)) {
             wxFile f;
             wxString fn = path + wxT("/") + cfg->sGetName() + wxT(".desktop");
-            ::myLogTrace(MYTRACETAG, wxT("Creating '%s'"), fn.c_str());
+            ::myLogTrace(MYTRACETAG, wxT("Creating '%s'"), fn.wx_str());
             if (f.Create(fn, true,
                         wxS_IRUSR|wxS_IWUSR|wxS_IXUSR|wxS_IRGRP|wxS_IROTH)) {
                 f.Write(dtEntry);
@@ -594,12 +595,12 @@ opennxApp::preInit()
                 for (i = 0; candidates[i]; i++) {
                     if (wxFileName::FileExists(candidates[i])) {
                         tmp = candidates[i];
-                        ::wxLogWarning(_("Found a CUPS daemon binary in %s, however it is not executable.\nIn order to use CUPS printing, you need to fix its permissions."), tmp.c_str());
+                        wxLogWarning(_("Found a CUPS daemon binary in %s, however it is not executable.\nIn order to use CUPS printing, you need to fix its permissions."), tmp.c_str());
                         break;
                     }
                 }
                 if (tmp.IsEmpty())
-                    ::wxLogWarning(_("Could not find any CUPS daemon binary.\nIn order to use CUPS printing, you need to install cups."));
+                    wxLogWarning(_("Could not find any CUPS daemon binary.\nIn order to use CUPS printing, you need to install cups."));
                 tmp = wxEmptyString;
             }
         }
@@ -679,9 +680,9 @@ opennxApp::preInit()
         }
     }
 # endif
-    ::myLogDebug(wxT("%s='%s'"), LD_LIBRARY_PATH, ldpath.c_str());
+    ::myLogDebug(wxT("%s='%s'"), LD_LIBRARY_PATH, ldpath.wx_str());
     if (!::wxSetEnv(LD_LIBRARY_PATH, ldpath)) {
-        ::wxLogSysError(wxT("Cannot set LD_LIBRARY_PATH"));
+        wxLogSysError(wxT("Cannot set LD_LIBRARY_PATH"));
         return false;
     }
 #endif
@@ -692,7 +693,7 @@ opennxApp::preInit()
         while (t.HasMoreTokens()) {
             wxString tag = t.GetNextToken();
             if (allTraceTags.Index(tag) != wxNOT_FOUND) {
-                ::myLogDebug(wxT("Trace for '%s' enabled"), tag.c_str());
+                ::myLogDebug(wxT("Trace for '%s' enabled"), tag.wx_str());
                 wxLog::AddTraceMask(tag);
             }
         }
@@ -866,7 +867,7 @@ void opennxApp::OnInitCmdLine(wxCmdLineParser& parser)
     // On Unix, --display is a toolkit option
     wxRegEx re(wxT("^--((exportres)|(cacert)|(caption)|(style)|(dialog)|(message)|(parent)|(session)|(window)|(trace))$"));
 #endif
-    wxArrayString as(argc, (const wxChar **)argv);
+    wxArrayString as = argv.GetArguments();
     for (i = 1; i < as.GetCount(); i++) {
         if (re.Matches(as[i])) {
             if ((i + 1) < as.GetCount()) {
@@ -877,7 +878,7 @@ void opennxApp::OnInitCmdLine(wxCmdLineParser& parser)
     }
     wxChar **xargv = new wxChar* [as.GetCount()];
     for (i = 0; i < as.GetCount(); i++)
-        xargv[i] = wxStrdup(as[i].c_str());
+        xargv[i] = wxStrdup(as[i].wx_str());
     parser.SetCmdLine(as.GetCount(), xargv);
 
 }
@@ -1010,7 +1011,7 @@ bool opennxApp::OnCmdLineParsed(wxCmdLineParser& parser)
                 OnCmdLineError(parser);
                 return false;
             }
-            ::myLogDebug(wxT("Trace for '%s' enabled"), tag.c_str());
+            ::myLogDebug(wxT("Trace for '%s' enabled"), tag.wx_str());
             wxLog::AddTraceMask(tag);
         }
     }
@@ -1390,7 +1391,7 @@ bool opennxApp::OnInit()
 #endif
             wxString watchcmd = fn.GetShortPath();
             watchcmd << wxT(" -r ") << m_iReader << wxT(" -p ") << m_nNxSshPID;
-            ::myLogTrace(MYTRACETAG, wxT("executing %s"), watchcmd.c_str());
+            ::myLogTrace(MYTRACETAG, wxT("executing %s"), watchcmd.wx_str());
             ::wxExecute(watchcmd);
         }
     }

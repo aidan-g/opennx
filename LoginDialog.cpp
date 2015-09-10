@@ -170,19 +170,19 @@ void LoginDialog::ReadConfigDirectory()
         delete m_pCurrentCfg;
     m_pCurrentCfg = NULL;
     m_pCtrlSessionName->Clear();
-    ::myLogTrace(MYTRACETAG, wxT("ReadConfigDirectory: LastSession='%s'"), m_sLastSessionFilename.c_str());
+    ::myLogTrace(MYTRACETAG, wxT("ReadConfigDirectory: LastSession='%s'"), m_sLastSessionFilename.wx_str());
     if (m_sLastSessionFilename.StartsWith(wxT("http://")) ||
             m_sLastSessionFilename.StartsWith(wxT("https://")) ||
             m_sLastSessionFilename.StartsWith(wxT("ftp://")) ||
             ((m_aConfigFiles.Index(m_sLastSessionFilename) == wxNOT_FOUND) &&
              (wxFile::Exists(m_sLastSessionFilename)))) {
         m_aConfigFiles.Add(m_sLastSessionFilename);
-        ::myLogTrace(MYTRACETAG, wxT("ReadConfigDirectory: Adding '%s'"), m_sLastSessionFilename.c_str());
+        ::myLogTrace(MYTRACETAG, wxT("ReadConfigDirectory: Adding '%s'"), m_sLastSessionFilename.wx_str());
     }
     for (i = 0; i < m_aConfigFiles.GetCount(); i++) {
         MyXmlConfig cfg(m_aConfigFiles[i]);
         if (cfg.IsValid()) {
-            m_pCtrlSessionName->Append(cfg.sGetName(), (void *)m_aConfigFiles[i].c_str());
+            m_pCtrlSessionName->Append(cfg.sGetName(), (void *)m_aConfigFiles[i].wx_str());
             if ((cfg.sGetFileName() == m_sLastSessionFilename) ||
                     (cfg.sGetName() == m_sLastSessionFilename)) {
                 m_pCurrentCfg = new MyXmlConfig(m_aConfigFiles[i]);
@@ -202,12 +202,12 @@ void LoginDialog::ReadConfigDirectory()
         }
     }
     if (m_pCurrentCfg) {
-        ::myLogTrace(MYTRACETAG, wxT("SS1='%s'"), m_sSessionName.c_str());
+        ::myLogTrace(MYTRACETAG, wxT("SS1='%s'"), m_sSessionName.wx_str());
         m_pCtrlSessionName->SetStringSelection(m_sSessionName);
         wxCommandEvent event;
         OnComboboxSessionSelected(event);
     } else {
-        ::myLogTrace(MYTRACETAG, wxT("SS2='%s'"), m_sLastSessionFilename.c_str());
+        ::myLogTrace(MYTRACETAG, wxT("SS2='%s'"), m_sLastSessionFilename.wx_str());
         // Last session name might be a plain session name (backward compatibility)
         m_pCtrlSessionName->SetStringSelection(m_sLastSessionFilename);
         wxCommandEvent event;
@@ -396,7 +396,7 @@ void LoginDialog::OnButtonConfigureClick( wxCommandEvent& event )
                 m_pCurrentCfg = new MyXmlConfig(fn);
                 break;
             case wxID_CLEAR:
-                ::myLogTrace(MYTRACETAG, wxT("deleting '%s'"), fn.c_str());
+                ::myLogTrace(MYTRACETAG, wxT("deleting '%s'"), fn.wx_str());
                 ::wxRemoveFile(fn);
                 ReadConfigDirectory();
                 break;

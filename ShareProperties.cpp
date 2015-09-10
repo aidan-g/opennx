@@ -367,7 +367,7 @@ void ShareProperties::CreateControls()
                     break;
             }
         } else {
-            ::wxLogMessage(_("No shares found"));
+            wxLogMessage(_("No shares found"));
             m_pCtrlLocalShares->Enable(false);
             m_pCtrlMountPoint->Enable(false);
             m_pCtrlUsername->Enable(false);

@@ -380,7 +380,7 @@ bool LibOpenSC::WatchHotRemove(unsigned int ridx, long sshpid) {
         }
         if (!wxProcess::Exists(sshpid))
             return true;
-        ::wxLogError(_("Could not terminate nxssh"));
+        wxLogError(_("Could not terminate nxssh"));
     } else
         return true;
     return false;

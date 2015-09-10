@@ -657,19 +657,19 @@ bool SessionProperties::Create( wxWindow* parent, wxWindowID WXUNUSED(id), const
                             case SharedResource::SHARE_UNKNOWN:
                                 break;
                             case SharedResource::SHARE_SMB_DISK:
-                                ::myLogTrace(MYTRACETAG, wxT("%s"), sg[i].toString().c_str());
+                                ::myLogTrace(MYTRACETAG, wxT("%s"), sg[i].toString().wx_str());
                                 lidx = m_pCtrlSmbShares->InsertItem(0, sg[i].m_sShareName, 1);
                                 m_pCtrlSmbShares->SetItem(lidx, 1, sg[i].m_sAlias);
                                 m_pCtrlSmbShares->SetItem(lidx, 2, comment);
                                 break;
                             case SharedResource::SHARE_SMB_PRINTER:
-                                ::myLogTrace(MYTRACETAG, wxT("%s"), sg[i].toString().c_str());
+                                ::myLogTrace(MYTRACETAG, wxT("%s"), sg[i].toString().wx_str());
                                 lidx = m_pCtrlSmbShares->InsertItem(0, sg[i].m_sShareName, 2);
                                 m_pCtrlSmbShares->SetItem(lidx, 1, sg[i].m_sDriver);
                                 m_pCtrlSmbShares->SetItem(lidx, 2, comment);
                                 break;
                             case SharedResource::SHARE_CUPS_PRINTER:
-                                ::myLogTrace(MYTRACETAG, wxT("%s"), sg[i].toString().c_str());
+                                ::myLogTrace(MYTRACETAG, wxT("%s"), sg[i].toString().wx_str());
                                 lidx = m_pCtrlSmbShares->InsertItem(0, sg[i].m_sShareName, 3);
                                 m_pCtrlSmbShares->SetItem(lidx, 1, sg[i].m_sDriver);
                                 m_pCtrlSmbShares->SetItem(lidx, 2, comment);
@@ -679,7 +679,7 @@ bool SessionProperties::Create( wxWindow* parent, wxWindowID WXUNUSED(id), const
                     }
                 }
                 if (0 > lidx) {
-                    ::myLogTrace(MYTRACETAG, wxT("Broken '%s'"), sg[i].toString().c_str());
+                    ::myLogTrace(MYTRACETAG, wxT("Broken '%s'"), sg[i].toString().wx_str());
                     lidx = m_pCtrlSmbShares->InsertItem(0, sg[i].m_sShareName, 0);
                     m_pCtrlSmbShares->SetItem(lidx, 1, sg[i].m_sAlias);
                     m_pCtrlSmbShares->SetItem(lidx, 2, comment);
@@ -797,7 +797,7 @@ SessionProperties::InstallOnCharHandlers(wxWindow *w /* = NULL*/)
                 if (v->IsKindOf(CLASSINFO(MyValidator)))
                     wxDynamicCast(v, MyValidator)->SetKeyTyped(this);
                 else
-                    ::wxLogError(wxT("Detected %s window with validator other than MyValidator!"),
+                    wxLogError(wxT("Detected %s window with validator other than MyValidator!"),
                             w->IsKindOf(CLASSINFO(wxTextCtrl)) ? wxT("wxTextCtrl") : wxT("wxSpinCtrl"));
             } else {
 #ifdef __WXMAC__
@@ -805,7 +805,7 @@ SessionProperties::InstallOnCharHandlers(wxWindow *w /* = NULL*/)
                 if (w->GetName().IsEmpty() || w->GetName().IsSameAs(wxT("text")))
                     continue;
 #endif
-                ::wxLogError(wxT("Detected %s (name=%s) window without validator!"),
+                wxLogError(wxT("Detected %s (name=%s) window without validator!"),
                         (w->IsKindOf(CLASSINFO(wxTextCtrl)) ? wxT("wxTextCtrl") : wxT("wxSpinCtrl")),
                         (w->GetName().IsEmpty() ? wxEmptyString : w->GetName().c_str()));
             }
@@ -1238,7 +1238,7 @@ SessionProperties::readKbdLayouts()
         << wxFileName::GetPathSeparator() << wxT("keyboards");
     wxFileInputStream fis(kbdCfg);
     if (!fis.IsOk()) {
-        ::wxLogError(_("Error while reading keyboard table"));
+        wxLogError(_("Error while reading keyboard table"));
         return false;
     }
     wxTextInputStream tis(fis);
@@ -1410,7 +1410,7 @@ void SessionProperties::OnCheckboxSmbClick( wxCommandEvent& event )
         UpdateDialogConstraints(true);
         CheckChanged();
     } else {
-        ::wxLogWarning(_("No local samba server is running."));
+        wxLogWarning(_("No local samba server is running."));
         wxDynamicCast(event.GetEventObject(), wxCheckBox)->SetValue(false);
         wxDynamicCast(event.GetEventObject(), wxCheckBox)->Enable(false);
     }
@@ -1466,7 +1466,7 @@ void SessionProperties::OnButtonSmbAddClick( wxCommandEvent& event )
         }
         CheckChanged();
     } else {
-        ::wxLogWarning(_("No sharable resources found"));
+        wxLogWarning(_("No sharable resources found"));
     }
 }
 
@@ -1580,7 +1580,7 @@ void SessionProperties::OnDeleteClick( wxCommandEvent& event )
                     m_pCfg->sGetName().c_str()), _("Delete Session"),
                 wxICON_QUESTION|wxYES_NO|wxNO_DEFAULT) == wxYES) {
         ::wxGetApp().RemoveDesktopEntry(m_pCfg);
-        ::myLogTrace(MYTRACETAG, wxT("Removing '%s'"), m_pCfg->sGetFileName().c_str());
+        ::myLogTrace(MYTRACETAG, wxT("Removing '%s'"), m_pCfg->sGetFileName().wx_str());
         ::wxRemoveFile(m_pCfg->sGetFileName());
         EndModal(wxID_CLEAR);
     }
@@ -1851,7 +1851,7 @@ void SessionProperties::OnCheckboxCupsenableClick( wxCommandEvent& event )
         UpdateDialogConstraints(true);
         CheckChanged();
     } else {
-        ::wxLogWarning(_("No cups server available."));
+        wxLogWarning(_("No cups server available."));
         wxDynamicCast(event.GetEventObject(), wxCheckBox)->SetValue(false);
         wxDynamicCast(event.GetEventObject(), wxCheckBox)->Enable(false);
         m_bUseCups = false;
